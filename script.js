@@ -23,7 +23,7 @@ let COLOR_MAP = {
   '#e5c29f': 0,
   '#d7b899': 0,
   '#1976d2': 1,
-  '#398e3d': 2,
+  '#388e3c': 2,
   '#d33030': 3,
   '#7b1fa2': 4,
 }
@@ -31,11 +31,17 @@ function getTile(x, y) {
   let pixelData = [];
   pixelData[0] = context.getImageData((x+0.6)*size, (y+0.4)*size, 1, 1).data;
   pixelData[1] = context.getImageData((x+0.5)*size, (y+0.5)*size, 1, 1).data;
-  for (const pixel of pixelData) {
-    let hexColor = '#'+((pixel[0]<<16)+(pixel[1]<<8)+pixel[2]).toString(16).padStart(6, '0');
+  let hexColors = [];
+  for (let i = 0; i < pixelData.length; i++) {
+    hexColors[i] = '#'+((pixelData[i][0]<<16)+(pixelData[i][1]<<8)+pixelData[i][2]).toString(16).padStart(6, '0');
+  }
+  for (const hexColor of hexColors) {
+    if (hexColor in COLOR_MAP && COLOR_MAP[hexColor] > 0) return COLOR_MAP[hexColor];
+  }
+  for (const hexColor of hexColors) {
     if (hexColor in COLOR_MAP) return COLOR_MAP[hexColor];
   }
-  console.error("ERROR GETTING TILE NUMBER");
+  console.error("Couldn't find tile number");
   console.error(pixelData);
 }
 
