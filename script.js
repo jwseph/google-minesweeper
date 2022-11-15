@@ -26,6 +26,7 @@ let COLOR_MAP = {
   '#388e3c': 2,
   '#d33030': 3,
   '#7b1fa2': 4,
+  '#ff8f00': 5,
 }
 function getTile(x, y) {
   let pixelData = [];
