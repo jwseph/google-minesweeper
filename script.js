@@ -29,27 +29,47 @@ let COLOR_MAP = {
   '#ff8f00': 5,
 }
 function getTile(x, y) {
+  let relativePositions = [[.6, .4], [.5, .5], [.6, .6], [.5, .58]];
   let pixelData = [];
-  pixelData[0] = context.getImageData((x+0.6)*size, (y+0.4)*size, 1, 1).data;
-  pixelData[1] = context.getImageData((x+0.5)*size, (y+0.5)*size, 1, 1).data;
+  for (const [dx, dy] of relativePositions) {
+    pixelData.push(context.getImageData((x+dx)*size, (y+dy)*size, 1, 1).data);
+  }
   let hexColors = [];
   for (let i = 0; i < pixelData.length; i++) {
     hexColors[i] = '#'+((pixelData[i][0]<<16)+(pixelData[i][1]<<8)+pixelData[i][2]).toString(16).padStart(6, '0');
   }
+  let tile = -Infinity;
   for (const hexColor of hexColors) {
-    if (hexColor in COLOR_MAP && COLOR_MAP[hexColor] > 0) return COLOR_MAP[hexColor];
+    if (!(hexColor in COLOR_MAP)) continue;
+    tile = Math.max(tile, COLOR_MAP[hexColor]);
   }
-  for (const hexColor of hexColors) {
-    if (hexColor in COLOR_MAP) return COLOR_MAP[hexColor];
-  }
+  if (tile > -Infinity) return tile;
   console.error("Couldn't find tile number");
   console.error(pixelData);
+}
+class FakeMouseEvent extends MouseEvent {
+  constructor(type, values) {
+    const { offsetX, offsetY, ...mouseValues } = values;
+    super(type, (mouseValues));
+    this._offsetX = offsetX;
+    this._offsetY = offsetY;
+  }
+  get offsetX() { return this._offsetX ?? super.offsetX; }
+  get offsetY() { return this._offsetY ?? super.offsetY; }
+}
+function clickTile(x, y) {
+  canvas.dispatchEvent(new FakeMouseEvent('mousedown', {
+    offsetX: (x+.5)*size,
+    offsetY: (y+.5)*size,
+    bubbles: true,
+  }))
 }
 function printBoard() {
   for (let y = 0; y < height; y++) {
     let row = [];
     for (let x = 0; x < width; x++) {
       let cur = getTile(x, y)+'';
+      if (cur.length == 2) cur = '. ';
       if (cur.length < 2) cur = ' '+cur;
       if (cur.length > 2) cur = '??';
       row.push(cur);
