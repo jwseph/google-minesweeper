@@ -78,7 +78,6 @@ class Game {
   }
   getTile(x, y) {
     if (this.board[x][y] == FLAG || this.board[x][y] > 0) return this.board[x][y];
-    // if (this.board[x][y] >= 0 || this.board[x][y] == FLAG) return this.board[x][y];
     let relativePositions = [
       [.6, .4], [.5, .5], [.6, .6], [.5, .58], [.5, .3],
       [.4, .4], [.4, .6], [.5, .4],
@@ -109,20 +108,6 @@ class Game {
     }
     this.canvas.dispatchEvent(new FakeMouseEvent('mousedown', values));
     this.canvas.dispatchEvent(new FakeMouseEvent('mouseup', values));
-  }
-  print() {
-    for (let y = 0; y < this.Y; y++) {
-      let row = [];
-      for (let x = 0; x < this.X; x++) {
-        let cur = this.getTile(x, y)+'';
-        // if (cur == '-2') cur = '. ';
-        // if (cur == '-1') cur = 'F ';
-        if (cur.length < 2) cur = ' '+cur;
-        if (cur.length > 2) cur = '??';
-        row.push(cur);
-      }
-      console.log(row.join('  '));
-    }
   }
   hasTile(x, y) {
     return 0 <= x && x < this.X && 0 <= y && y < this.Y;
@@ -191,9 +176,6 @@ class Game {
       }
     }
   }
-  updateTiles() {
-    this.forAll(() => {});  // Refreshes tiles
-  }
   solveUntilDone() {
     if (gameOver()) return;
     this.solve();
@@ -212,7 +194,7 @@ class Game {
     if (unknown == 0) return;
     setTimeout(() => this.solveUntilDone(), 500);
     for (let t = 100; t < 500; t += 40) {
-      setTimeout(() => this.updateTiles(), t);
+      setTimeout(() => this.forAll(() => {}), t);  // Refreshes tiles
     }
   }
 }
