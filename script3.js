@@ -1,6 +1,6 @@
 (function () {
 
-const select = _ => document.querySelector(_);
+const select = (_, el=document) => el.querySelector(_);
 
 class FakeMouseEvent extends MouseEvent {
   constructor(type, values) {
@@ -29,6 +29,25 @@ function choose(n, k) {
   return res;
 }
 
+function getDifficultyIndex() {
+  // Easy - 0, Medium - 1, Hard - 2
+  // Should support different languages
+  let popup = select('g-popup', select('canvas').parentNode);
+  let menu = select('g-menu', popup);
+  for (let i = 0; i < 3; i++) {
+    if (menu.children[i].getAttribute('aria-checked') == 'true') {
+      return i;
+    }
+  }
+  return -1;
+}
+
+function gameOver() {
+  let playAgain = select('h2', select('canvas').parentNode);
+  let popup = playAgain.parentNode.parentNode.parentNode;
+  return popup.style.visibility != 'hidden';
+}
+
 const UNKNOWN = -2, FLAG = -1;
 
 class Game {
@@ -46,15 +65,10 @@ class Game {
     '#ff8f00': 5,
   }
   constructor() {
-    this.canvas = select('#rso > div:first-child > div > block-component > div > div.dG2XIf.Wnoohf.OJXvsb > div > div > div > div.ifM9O > div > div > div > div > div:nth-child(2) > g-lightbox > div > div.ynlwjd.VDgVie.qzMpzb.u98ib > div.AU64fe.zsYMMe.TUOsUe > span > div > canvas');
+    this.canvas = select('canvas');
     this.context = this.canvas.getContext('2d', {willReadFrequently: true});
-    this.difficulty = select('#ow37 > :first-child').textContent;
-    let gameData = {
-      Easy: [10, 8, 10],
-      Medium: [18, 14, 40],
-      Hard: [24, 20, 99],
-    };
-    [this.X, this.Y, this.mines] = gameData[this.difficulty];
+    let gameData = [[10, 8, 10], [18, 14, 40], [24, 20, 99]];
+    [this.X, this.Y, this.mines] = gameData[getDifficultyIndex()];
     this.size = this.canvas.width / this.X;
     this.board = [];
     for (let x = 0; x < this.X; x++) {
@@ -186,7 +200,7 @@ class Game {
     this.forAll((x, y) => this.getTile(x, y))
   }
   solveUntilDone() {
-    if (select('#Qwh28e').style.visibility != 'hidden') return;
+    if (gameOver()) return;
     this.solve();
     let flags = 0, unknown = 0;
     this.forAll((x, y) => {
