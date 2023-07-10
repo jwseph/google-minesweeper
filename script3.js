@@ -48,7 +48,7 @@ class Game {
   constructor() {
     this.canvas = select('#rso > div:first-child > div > block-component > div > div.dG2XIf.Wnoohf.OJXvsb > div > div > div > div.ifM9O > div > div > div > div > div:nth-child(2) > g-lightbox > div > div.ynlwjd.VDgVie.qzMpzb.u98ib > div.AU64fe.zsYMMe.TUOsUe > span > div > canvas');
     this.context = this.canvas.getContext('2d', {willReadFrequently: true});
-    this.difficulty = select('#ow36 > :first-child').textContent;
+    this.difficulty = select('#ow37 > :first-child').textContent;
     let gameData = {
       Easy: [10, 8, 10],
       Medium: [18, 14, 40],
@@ -61,7 +61,6 @@ class Game {
       this.board[x] = [];
       for (let y = 0; y < this.Y; y++) this.board[x][y] = UNKNOWN;
     }
-    this.unsolved = this.X*this.Y;
   }
   getTile(x, y) {
     if (this.board[x][y] == FLAG || this.board[x][y] > 0) return this.board[x][y];
@@ -134,7 +133,7 @@ class Game {
   }
   solve() {
     // Source: https://dev.to/krlove/creating-advanced-minesweeper-solver-using-logic-programming-2ppd
-    console.log('[Minesweeper] Solving...')
+    console.log('[Minesweeper] Solving...');
     const unknownMap = new Map();
     const ruleArgs = [];
     this.forAll((x, y) => {
@@ -176,12 +175,9 @@ class Game {
       }
       if (mine == 0) {
         this.clickTile(x, y, 0)
-        this.unsolved -= 1;
       }
       if (mine == total) {
         this.board[x][y] = FLAG;
-        this.unsolved -= 1;
-        this.bombs -= 1;
         this.clickTile(x, y, 1)
       }
     }
@@ -190,16 +186,22 @@ class Game {
     this.forAll((x, y) => this.getTile(x, y))
   }
   solveUntilDone() {
-    if (this.bombs == 0) {
+    if (select('#Qwh28e').style.visibility != 'hidden') return;
+    this.solve();
+    let flags = 0, unknown = 0;
+    this.forAll((x, y) => {
+      let tile = this.getTile(x, y);
+      flags += tile == FLAG;
+      unknown += tile == UNKNOWN;
+    })
+    if (flags == this.mines) {
       this.forAll((x, y) => {
         if (this.getTile(x, y) != UNKNOWN) return;
         this.clickTile(x, y, 0);
-        this.unsolved -= 1;
+        unknown -= 1;
       })
     }
-    if (this.unsolved == 0) return;
-    if (select('#Qwh28e').style.visibility != 'hidden') return;
-    this.solve();
+    if (unknown == 0) return;
     setTimeout(() => this.solveUntilDone(), 800);
     for (let t = 400; t < 1000; t += 50) {
       setTimeout(() => this.updateTiles(), t);
