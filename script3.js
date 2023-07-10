@@ -63,6 +63,7 @@ class Game {
     '#d32f2f': 3,
     '#7b1fa2': 4,
     '#ff8f00': 5,
+    '#0097a7': 6,
   }
   constructor() {
     this.canvas = select('canvas');
@@ -192,10 +193,7 @@ class Game {
       })
     }
     if (unknown == 0) return;
-    setTimeout(() => this.solveUntilDone(), 500);
-    for (let t = 100; t < 500; t += 40) {
-      setTimeout(() => this.forAll(() => {}), t);  // Refreshes tiles
-    }
+    setTimeout(() => this.solveUntilDone(), 300);
   }
 }
 
