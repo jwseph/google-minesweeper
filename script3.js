@@ -64,6 +64,7 @@ class Game {
     '#7b1fa2': 4,
     '#ff8f00': 5,
     '#0097a7': 6,
+    '#424242': 7,
   }
   constructor() {
     this.canvas = select('canvas');
