@@ -124,24 +124,18 @@ class Game {
   hasTile(x, y) {
     return 0 <= x && x < this.X && 0 <= y && y < this.Y;
   }
-  for4(x, y, fn) {
-    for (let [i, j] of [[x-1, y], [x+1, y], [x, y-1], [x, y+1]]) {
-      if (!this.hasTile(i, j)) continue;
-      fn(i, j);
-    }
-  }
   for8(x, y, fn) {
     for (let i = x-1; i <= x+1; i++) {
       for (let j = y-1; j <= y+1; j++) {
         if (!this.hasTile(i, j) || i == x && j == y) continue;
-        fn(i, j);
+        fn(i, j, this.getTile(i, j));
       }
     }
   }
   forAll(fn) {
     for (let y = 0; y < this.Y; y++) {
       for (let x = 0; x < this.X; x++) {
-        fn(x, y);
+        fn(x, y, this.getTile(x, y));
       }
     }
   }
@@ -150,13 +144,11 @@ class Game {
     console.log('[Minesweeper] Solving...');
     const unknownMap = new Map();
     const ruleArgs = [];
-    this.forAll((x, y) => {
-      let tile = this.getTile(x, y);
+    this.forAll((x, y, tile) => {
       if (tile < 0) return;
       const unknownNeighbors = [];
       let adjFlags = 0;
-      this.for8(x, y, (i, j) => {
-        let adjTile = this.getTile(i, j);
+      this.for8(x, y, (i, j, adjTile) => {
         adjFlags += adjTile == FLAG;
         if (adjTile == FLAG || adjTile >= 0) return;
         let key = i+','+j;
@@ -197,20 +189,19 @@ class Game {
     }
   }
   updateTiles() {
-    this.forAll((x, y) => this.getTile(x, y))
+    this.forAll(() => {});  // Refreshes tiles
   }
   solveUntilDone() {
     if (gameOver()) return;
     this.solve();
     let flags = 0, unknown = 0;
-    this.forAll((x, y) => {
-      let tile = this.getTile(x, y);
+    this.forAll((x, y, tile) => {
       flags += tile == FLAG;
       unknown += tile == UNKNOWN;
     })
     if (flags == this.mines) {
-      this.forAll((x, y) => {
-        if (this.getTile(x, y) != UNKNOWN) return;
+      this.forAll((x, y, tile) => {
+        if (tile != UNKNOWN) return;
         this.clickTile(x, y, 0);
         unknown -= 1;
       })
