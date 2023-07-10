@@ -10,7 +10,7 @@ This bot solves the Google Minesweeper game!
 4. Start the game by clicking anywhere on the board.
 5. Paste the following code into the console:
 ```js
-$('head').appendChild(document.createElement('script')).src='https://cdn.jsdelivr.net/gh/jwseph/google-minesweeper/script3.js'
+$('head').appendChild(document.createElement('script')).src='https://cdn.jsdelivr.net/gh/jwseph/google-minesweeper@main/script3.js'
 ```
 6. If the bot gets stuck, it usually means you have to make a guess. The bot will resume after you guess.
 
