@@ -79,7 +79,10 @@ class Game {
   getTile(x, y) {
     if (this.board[x][y] == FLAG || this.board[x][y] > 0) return this.board[x][y];
     // if (this.board[x][y] >= 0 || this.board[x][y] == FLAG) return this.board[x][y];
-    let relativePositions = [[.6, .4], [.5, .5], [.6, .6], [.5, .58], [.5, .3]];
+    let relativePositions = [
+      [.6, .4], [.5, .5], [.6, .6], [.5, .58], [.5, .3],
+      [.4, .4], [.4, .6], [.5, .4],
+    ]
     let pixelData = [];
     for (const [dx, dy] of relativePositions) {
       pixelData.push(this.context.getImageData((x+dx)*this.size, (y+dy)*this.size, 1, 1).data);
@@ -207,8 +210,8 @@ class Game {
       })
     }
     if (unknown == 0) return;
-    setTimeout(() => this.solveUntilDone(), 800);
-    for (let t = 400; t < 1000; t += 50) {
+    setTimeout(() => this.solveUntilDone(), 500);
+    for (let t = 100; t < 500; t += 40) {
       setTimeout(() => this.updateTiles(), t);
     }
   }
