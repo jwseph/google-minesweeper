@@ -148,7 +148,7 @@ class Game {
     const unknownMap = new Map();
     const ruleArgs = [];
     this.forAll((x, y, tile) => {
-      if (tile < 0) return;
+      if (tile <= 0) return;
       const unknownNeighbors = [];
       let adjFlags = 0;
       this.for8(x, y, (i, j, adjTile) => {
