@@ -18,6 +18,6 @@ $('head').appendChild(document.createElement('script')).src='https://cdn.jsdeliv
 
 The bot reads the board using the RGB color data of certain pixels of each cell. Each of the numbers has a unique color.
 
-The reason for the delays is the light-green particle effects (that appear when revealing cells), which interfere with color detection. I tried to make the delay as low as I could, so color detection may occasionally fail.
+The reason for the delays is the light-green particle effects (that appear when revealing cells) that interfere with color detection.
 
 The solver itself relies on LogicJS, which provides logic programming support for JavaScript.
