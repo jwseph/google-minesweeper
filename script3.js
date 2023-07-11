@@ -82,7 +82,7 @@ class Game {
     if (this.board[x][y] == FLAG || this.board[x][y] > 0) return this.board[x][y];
     let relativePositions = [
       [.6, .4], [.5, .5], [.6, .6], [.5, .58], [.5, .3],
-      [.4, .4], [.4, .6], [.5, .4],
+      [.45, .45], [.4, .6], [.5, .4],
     ]
     let pixelData = [];
     for (const [dx, dy] of relativePositions) {
