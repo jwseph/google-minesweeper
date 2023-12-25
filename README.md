@@ -1,6 +1,6 @@
 # Google Minesweeper Bot
 
-This bot solves the Google Minesweeper game!
+This bot solves the Google Minesweeper game! I was inspired to create this because I'm a lazy person
 
 ## Usage
 
