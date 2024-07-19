@@ -24,5 +24,5 @@ The solver itself relies on LogicJS, which provides logic programming support fo
 
 ## Files
 - `script.js` - Bot that scrapes LogiGames's minesweeper solver
-- `script2.js` - Bot that basically uses a brute-force approach, a little buggy
-- `script3.js` - Finished bot that uses LogicJS
+- `script2.js` - Bot that basically uses a brute-force approach, a little buggy. Efficient but might become stuck on boards relying on info like no. of flags left, etc that are solvable but harder.
+- `script3.js` - Finished bot that uses LogicJS. Simple and *complete* solver
