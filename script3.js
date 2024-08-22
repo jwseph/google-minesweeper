@@ -72,17 +72,20 @@ class Game {
     let gameData = [[10, 8, 10], [18, 14, 40], [24, 20, 99]];
     [this.X, this.Y, this.mines] = gameData[getDifficultyIndex()];
     this.size = this.canvas.width / this.X;
-    this.board = [];
+    this.time = 1;
+    this.board = [], this.vst = [];
     for (let x = 0; x < this.X; x++) {
-      this.board[x] = [];
-      for (let y = 0; y < this.Y; y++) this.board[x][y] = UNKNOWN;
+      this.board[x] = [], this.vst[x] = [];
+      for (let y = 0; y < this.Y; y++) this.board[x][y] = UNKNOWN, this.vst[x][y] = 0;
     }
   }
   getTile(x, y) {
-    if (this.board[x][y] == FLAG || this.board[x][y] > 0) return this.board[x][y];
+    if (this.board[x][y] == FLAG || this.board[x][y] > 0 || this.vst[x][y] == this.time) return this.board[x][y];
+    this.vst[x][y] = this.time;
     let relativePositions = [
       [.6, .4], [.5, .5], [.6, .6], [.5, .58], [.5, .3],
       [.45, .45], [.4, .6], [.5, .4],
+      [.1, .9], [.9, .9],
     ]
     let pixelData = [];
     for (const [dx, dy] of relativePositions) {
@@ -182,6 +185,7 @@ class Game {
     if (gameOver()) return;
     this.solve();
     let flags = 0, unknown = 0;
+    this.time++;
     this.forAll((x, y, tile) => {
       flags += tile == FLAG;
       unknown += tile == UNKNOWN;
@@ -194,7 +198,17 @@ class Game {
       })
     }
     if (unknown == 0) return;
-    setTimeout(() => this.solveUntilDone(), 300);
+    const check = () => {
+      let digitSeparates = true;
+      this.time++;
+      this.forAll((x, y, tile) => {
+        this.for8((i, j, adjTile) => {
+          if (tile == 0 && adjTile < 0) digitSeparates = false;
+        });
+      });
+      digitSeparates ? this.solveUntilDone() : setTimeout(check, 20);
+    };
+    setTimeout(check, 200);
   }
 }
 
